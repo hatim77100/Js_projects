@@ -110,10 +110,24 @@ let questions = [
 // Necessary Variables
 const lastQuestion = questions.length - 1;
 let activeQuestion = 0;
-let count = 0;
 const questionTime = 10; // 10 secondes
 const guageWidht = 800; // 800px
 const guageUnit = guageWidht / questionTime; // 80px
+let count = 0;
+let score = 0;
+let TIMER;
+
+// Start Button Event Listener
+start.addEventListener("click", startQuiz);
+
+// Answer choices Event Listeners
+allAnswerchoices.forEach(function (clickAnswer) {
+  clickAnswer.addEventListener("click", function (e) {
+    console.log(e.target.innerText);
+    let userAnswer = e.target.innerText;
+    checkAnswer(userAnswer);
+  });
+});
 
 // renderQuestion Function
 function renderQuestion() {
@@ -128,9 +142,15 @@ function renderQuestion() {
   document.body.style.backgroundImage = bodyImg;
 }
 
-start.style.display = "none";
-renderQuestion();
-quiz.style.visibility = "visible";
+// startQuiz function
+function startQuiz() {
+  start.style.display = "none";
+  quiz.style.visibility = "visible";
+  TIMER = setInterval(renderCounter, 1000);
+  renderQuestion();
+  renderProgress();
+  renderCounter();
+}
 
 // render progress function
 function renderProgress() {
@@ -139,4 +159,33 @@ function renderProgress() {
   }
 }
 
-renderProgress();
+// render counter function
+function renderCounter() {
+  if (count <= questionTime) {
+    counter.innerHTML = count;
+    timeGauge.style.width = count * guageUnit + "px";
+    count++;
+  } else {
+    count = 0;
+  }
+}
+
+// check Answer function
+function checkAnswer(answer) {
+  if (answer === questions[activeQuestion].correctAnswer) {
+    score++;
+    answerIsCorrect();
+  } else {
+    answerIsIncorrect();
+  }
+}
+
+// answerIsCorrect function
+function answerIsCorrect() {
+  document.getElementById(activeQuestion).style.backgroundColor = "green";
+}
+
+// answerIsInCorrect function
+function answerIsIncorrect() {
+  document.getElementById(activeQuestion).style.backgroundColor = "red";
+}
