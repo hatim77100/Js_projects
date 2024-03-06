@@ -123,7 +123,7 @@ start.addEventListener("click", startQuiz);
 // Answer choices Event Listeners
 allAnswerchoices.forEach(function (clickAnswer) {
   clickAnswer.addEventListener("click", function (e) {
-    console.log(e.target.innerText);
+    // console.log(e.target.innerText);
     let userAnswer = e.target.innerText;
     checkAnswer(userAnswer);
   });
@@ -166,7 +166,8 @@ function renderCounter() {
     timeGauge.style.width = count * guageUnit + "px";
     count++;
   } else {
-    count = 0;
+    answerIsIncorrect();
+    nextQuestion();
   }
 }
 
@@ -178,6 +179,7 @@ function checkAnswer(answer) {
   } else {
     answerIsIncorrect();
   }
+  nextQuestion();
 }
 
 // answerIsCorrect function
@@ -188,4 +190,25 @@ function answerIsCorrect() {
 // answerIsInCorrect function
 function answerIsIncorrect() {
   document.getElementById(activeQuestion).style.backgroundColor = "red";
+}
+
+// next question function
+function nextQuestion() {
+  count = 0;
+  if (activeQuestion < lastQuestion) {
+    activeQuestion++;
+    renderQuestion();
+  } else {
+    clearInterval(TIMER);
+    renderScore();
+  }
+}
+
+// render score function
+function renderScore() {
+  scoreContainer.style.visibility = "visible";
+
+  let scorePercentage = Math.round((100 * score) / questions.length);
+  scoreContainer.innerHTML = `<h2>Percentage of Correctly Answered Questions: ${scorePercentage}</h2>`;
+  scoreContainer.innerHTML += `<h2>Number of Correctly Answered Questions: ${score}</h2>`;
 }
